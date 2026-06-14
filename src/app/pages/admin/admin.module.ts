@@ -1,9 +1,16 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
 import { AdminRoutingModule } from './admin-routing.module';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TagModule } from 'primeng/tag';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
 
 import { AdminLayoutComponent } from './layout/admin-layout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -23,6 +30,12 @@ import { FuncionariosComponent } from './funcionarios/funcionarios.component';
     PedidoDetalheComponent,
     FuncionariosComponent,
   ],
-  imports: [SharedModule, AdminRoutingModule, TooltipModule, SkeletonModule, TagModule]
+  imports: [
+    SharedModule, AdminRoutingModule,
+    TooltipModule, SkeletonModule, TagModule,
+    TableModule, ButtonModule, InputTextModule, DropdownModule,
+    ConfirmDialogModule, ToastModule,
+  ],
+  providers: [MessageService, ConfirmationService]
 })
 export class AdminModule {}

@@ -1,1 +1,154 @@
-<p>materiais-list works!</p>
+<div class="materiais-page">
+
+  <!-- Cabeçalho -->
+  <div class="page-header">
+    <h1 class="page-titulo">Materiais</h1>
+    <p-button label="Novo Material" icon="pi pi-plus" styleClass="btn-accent"
+              (onClick)="novoMaterial()" />
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-bar">
+    <div class="filtro-busca">
+      <i class="pi pi-search"></i>
+      <input pInputText type="text" placeholder="Buscar por nome..."
+             [(ngModel)]="filtroNome" (ngModelChange)="aplicarFiltros()" />
+    </div>
+    <p-dropdown [options]="opcoesTipo" [(ngModel)]="filtroTipo"
+                (onChange)="aplicarFiltros()"
+                optionLabel="label" optionValue="value"
+                placeholder="Todos os tipos" />
+  </div>
+
+  <!-- Skeleton loading -->
+  <ng-container *ngIf="carregando">
+    <div class="skeleton-table hide-mobile">
+      <div class="skeleton-row skeleton-header">
+        <p-skeleton *ngFor="let h of [1,2,3,4,5,6]" height="14px" />
+      </div>
+      <div class="skeleton-row" *ngFor="let p of placeholders">
+        <p-skeleton height="14px" />
+        <p-skeleton width="80px" height="22px" borderRadius="12px" />
+        <p-skeleton width="60px" height="14px" />
+        <p-skeleton width="24px" height="24px" borderRadius="50%" />
+        <p-skeleton width="70px" height="22px" borderRadius="12px" />
+        <div class="skeleton-acoes">
+          <p-skeleton width="32px" height="32px" borderRadius="6px" />
+          <p-skeleton width="32px" height="32px" borderRadius="6px" />
+          <p-skeleton width="32px" height="32px" borderRadius="6px" />
+        </div>
+      </div>
+    </div>
+    <div class="show-mobile">
+      <div class="mobile-card" *ngFor="let p of placeholders">
+        <div class="mobile-card__header">
+          <p-skeleton width="150px" height="16px" />
+          <p-skeleton width="70px" height="22px" borderRadius="12px" />
+        </div>
+        <div class="mobile-card__row">
+          <p-skeleton width="60px" height="13px" />
+          <p-skeleton width="80px" height="13px" />
+        </div>
+        <div class="mobile-card__row">
+          <p-skeleton width="80px" height="13px" />
+          <p-skeleton width="50px" height="13px" />
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Tabela (desktop) -->
+  <p-table *ngIf="!carregando"
+           [value]="materiaisFiltrados"
+           styleClass="p-datatable-sm p-datatable-striped hide-mobile"
+           [paginator]="materiaisFiltrados.length > 10"
+           [rows]="10">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nome</th>
+        <th>Tipo</th>
+        <th>Tamanhos</th>
+        <th>Sublimação</th>
+        <th>Status</th>
+        <th class="col-acoes">Ações</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-material>
+      <tr>
+        <td class="col-nome">{{ material.nome }}</td>
+        <td>
+          <p-tag [value]="material.tipo === 'liso' ? 'Liso' : 'Sublimação'"
+                 [severity]="material.tipo === 'liso' ? 'secondary' : 'info'" />
+        </td>
+        <td>{{ tamanhoCount(material) }} tamanho(s)</td>
+        <td class="col-centro">
+          <i class="pi"
+             [ngClass]="material.permite_sublimacao ? 'pi-check-circle icon-sim' : 'pi-times-circle icon-nao'"></i>
+        </td>
+        <td>
+          <p-tag [value]="material.ativo ? 'Ativo' : 'Inativo'"
+                 [severity]="material.ativo ? 'success' : 'danger'" />
+        </td>
+        <td class="col-acoes">
+          <div class="acoes">
+            <p-button icon="pi pi-pencil" severity="secondary" [outlined]="true" size="small"
+                      pTooltip="Editar" tooltipPosition="top"
+                      (onClick)="editar(material.id)" />
+            <p-button [icon]="material.ativo ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                      severity="secondary" [outlined]="true" size="small"
+                      [pTooltip]="material.ativo ? 'Desativar' : 'Ativar'" tooltipPosition="top"
+                      (onClick)="toggleAtivo(material)" />
+            <p-button icon="pi pi-trash" severity="danger" [outlined]="true" size="small"
+                      pTooltip="Remover" tooltipPosition="top"
+                      (onClick)="confirmarRemover(material)" />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="empty-msg">Nenhum material encontrado.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Cards (mobile) -->
+  <div *ngIf="!carregando" class="mobile-list show-mobile">
+    <div class="mobile-card" *ngFor="let material of materiaisFiltrados">
+      <div class="mobile-card__header">
+        <span class="mobile-card__title">{{ material.nome }}</span>
+        <p-tag [value]="material.ativo ? 'Ativo' : 'Inativo'"
+               [severity]="material.ativo ? 'success' : 'danger'" />
+      </div>
+      <div class="mobile-card__row">
+        <span class="mobile-card__label">Tipo</span>
+        <p-tag [value]="material.tipo === 'liso' ? 'Liso' : 'Sublimação'"
+               [severity]="material.tipo === 'liso' ? 'secondary' : 'info'" />
+      </div>
+      <div class="mobile-card__row">
+        <span class="mobile-card__label">Tamanhos</span>
+        <span>{{ tamanhoCount(material) }} ativo(s)</span>
+      </div>
+      <div class="mobile-card__row">
+        <span class="mobile-card__label">Sublimação</span>
+        <i class="pi" [ngClass]="material.permite_sublimacao ? 'pi-check-circle icon-sim' : 'pi-times-circle icon-nao'"></i>
+      </div>
+      <div class="mobile-card__actions">
+        <p-button icon="pi pi-pencil" severity="secondary" [outlined]="true" size="small"
+                  (onClick)="editar(material.id)" />
+        <p-button [icon]="material.ativo ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                  severity="secondary" [outlined]="true" size="small"
+                  (onClick)="toggleAtivo(material)" />
+        <p-button icon="pi pi-trash" severity="danger" [outlined]="true" size="small"
+                  (onClick)="confirmarRemover(material)" />
+      </div>
+    </div>
+    <p *ngIf="!carregando && materiaisFiltrados.length === 0" class="empty-msg">
+      Nenhum material encontrado.
+    </p>
+  </div>
+
+  <p-toast />
+  <p-confirmDialog />
+
+</div>
