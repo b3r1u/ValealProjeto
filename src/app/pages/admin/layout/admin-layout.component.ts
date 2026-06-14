@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd, NavigationStart } from '@angular/router';
+import { filter, Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
+import { LoadingService } from '../../../services/loading.service';
 import { Usuario } from '../../../models/usuario.model';
 
 interface NavItem {
@@ -16,7 +17,7 @@ interface NavItem {
   templateUrl: './admin-layout.component.html',
   styleUrls: ['./admin-layout.component.scss']
 })
-export class AdminLayoutComponent implements OnInit {
+export class AdminLayoutComponent implements OnInit, OnDestroy {
   sidebarAberta = false;
   usuario: Usuario | null = null;
 
@@ -29,6 +30,9 @@ export class AdminLayoutComponent implements OnInit {
 
   tituloPagina = 'Dashboard';
 
+  private routerSub?: Subscription;
+  private loadingTimer?: ReturnType<typeof setTimeout>;
+
   private tituloMap: Record<string, string> = {
     '/admin':                 'Dashboard',
     '/admin/materiais':       'Materiais',
@@ -37,18 +41,32 @@ export class AdminLayoutComponent implements OnInit {
     '/admin/funcionarios':    'Funcionários',
   };
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private loadingService: LoadingService
+  ) {}
 
   ngOnInit(): void {
     this.usuario = this.authService.getUsuario();
     this.atualizarTitulo(this.router.url);
 
-    this.router.events
-      .pipe(filter(e => e instanceof NavigationEnd))
-      .subscribe((e: NavigationEnd) => {
-        this.atualizarTitulo(e.urlAfterRedirects);
+    this.routerSub = this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        clearTimeout(this.loadingTimer);
+        this.loadingService.show();
+        this.loadingTimer = setTimeout(() => this.loadingService.hide(), 1500);
+      }
+      if (event instanceof NavigationEnd) {
+        this.atualizarTitulo(event.urlAfterRedirects);
         this.sidebarAberta = false;
-      });
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSub?.unsubscribe();
+    clearTimeout(this.loadingTimer);
   }
 
   toggleSidebar(): void {

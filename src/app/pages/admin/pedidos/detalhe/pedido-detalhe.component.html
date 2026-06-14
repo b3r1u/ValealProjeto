@@ -1,1 +1,143 @@
-<p>pedido-detalhe works!</p>
+<div class="detalhe-page">
+
+  <!-- Cabeçalho -->
+  <div class="page-header">
+    <div class="page-header__left">
+      <p-button icon="pi pi-arrow-left" severity="secondary" [text]="true"
+                (onClick)="voltar()" pTooltip="Voltar" tooltipPosition="right" />
+      <ng-container *ngIf="!carregando && pedido">
+        <h1 class="page-titulo">Pedido <span class="page-titulo__id">#{{ pedido.id }}</span></h1>
+      </ng-container>
+      <p-skeleton *ngIf="carregando" width="160px" height="28px" />
+    </div>
+    <p-tag *ngIf="!carregando && pedido"
+           [value]="statusLabel(pedido.status)"
+           [severity]="statusSeverity(pedido.status)"
+           styleClass="status-tag" />
+  </div>
+
+  <!-- Skeleton -->
+  <ng-container *ngIf="carregando">
+    <div class="detalhe-card">
+      <p-skeleton width="140px" height="13px" styleClass="mb-4" />
+      <div class="info-grid">
+        <div *ngFor="let i of [1,2,3,4]">
+          <p-skeleton width="80px" height="11px" styleClass="mb-2" />
+          <p-skeleton width="140px" height="16px" />
+        </div>
+      </div>
+    </div>
+    <div class="detalhe-card">
+      <p-skeleton width="100px" height="13px" styleClass="mb-4" />
+      <p-skeleton height="120px" />
+    </div>
+  </ng-container>
+
+  <!-- Conteúdo -->
+  <ng-container *ngIf="!carregando && pedido">
+
+    <!-- Card: Informações -->
+    <div class="detalhe-card">
+      <h2 class="card-titulo">Informações do Pedido</h2>
+      <div class="info-grid">
+        <div class="info-field">
+          <span class="info-label">Cliente</span>
+          <span class="info-valor">{{ nomeCliente(pedido.cliente_id) }}</span>
+        </div>
+        <div class="info-field">
+          <span class="info-label">Data do Pedido</span>
+          <span class="info-valor">{{ formatarData(pedido.criado_em) }}</span>
+        </div>
+        <div class="info-field">
+          <span class="info-label">Arte</span>
+          <span class="info-valor info-valor--arte">
+            <i class="pi" [ngClass]="pedido.tem_arte ? 'pi-check-circle arte-sim' : 'pi-times-circle arte-nao'"></i>
+            {{ pedido.tem_arte ? 'Enviada pelo cliente' : 'Não enviada' }}
+          </span>
+        </div>
+        <div class="info-field">
+          <span class="info-label">Observações</span>
+          <span class="info-valor">{{ pedido.observacoes || '—' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card: Itens -->
+    <div class="detalhe-card">
+      <h2 class="card-titulo">Itens do Pedido</h2>
+
+      <!-- Tabela (desktop) -->
+      <p-table [value]="pedido.itens" styleClass="p-datatable-sm p-datatable-striped hide-mobile">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Material</th>
+            <th class="col-centro">Tamanho</th>
+            <th class="col-centro">Qtd.</th>
+            <th class="col-valor">Preço Unit.</th>
+            <th class="col-valor">Subtotal</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td class="col-material">{{ nomeMaterial(item.material_id) }}</td>
+            <td class="col-centro"><span class="tamanho-badge">{{ item.tamanho }}</span></td>
+            <td class="col-centro">{{ item.quantidade }}</td>
+            <td class="col-valor">{{ formatarValor(item.preco_unitario) }}</td>
+            <td class="col-valor col-valor--destaque">{{ formatarValor(item.subtotal) }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr class="linha-total">
+            <td colspan="4" class="total-label">Total do Pedido</td>
+            <td class="col-valor total-valor">{{ formatarValor(pedido.total) }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <!-- Cards (mobile) -->
+      <div class="mobile-itens show-mobile">
+        <div class="item-card" *ngFor="let item of pedido.itens">
+          <div class="item-card__header">
+            <span class="item-card__nome">{{ nomeMaterial(item.material_id) }}</span>
+            <span class="tamanho-badge">{{ item.tamanho }}</span>
+          </div>
+          <div class="item-card__row">
+            <span class="item-card__label">Quantidade</span>
+            <span>{{ item.quantidade }} un.</span>
+          </div>
+          <div class="item-card__row">
+            <span class="item-card__label">Preço Unit.</span>
+            <span>{{ formatarValor(item.preco_unitario) }}</span>
+          </div>
+          <div class="item-card__row item-card__row--total">
+            <span class="item-card__label">Subtotal</span>
+            <span class="item-card__subtotal">{{ formatarValor(item.subtotal) }}</span>
+          </div>
+        </div>
+        <div class="mobile-total">
+          <span class="mobile-total__label">Total do Pedido</span>
+          <span class="mobile-total__valor">{{ formatarValor(pedido.total) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card: Atualizar Status -->
+    <div class="detalhe-card">
+      <h2 class="card-titulo">Atualizar Status</h2>
+      <div class="status-form">
+        <p-dropdown [options]="opcoesStatus" [(ngModel)]="statusSelecionado"
+                    optionLabel="label" optionValue="value"
+                    placeholder="Selecione o status" />
+        <p-button label="Salvar alteração" icon="pi pi-check"
+                  styleClass="btn-accent"
+                  [loading]="salvando"
+                  [disabled]="!statusAlterado()"
+                  (onClick)="atualizarStatus()" />
+      </div>
+    </div>
+
+  </ng-container>
+
+  <p-toast />
+
+</div>

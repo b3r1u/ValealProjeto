@@ -1,0 +1,228 @@
+@use '../../../../../styles/breakpoints' as *;
+
+/* ─── Layout ─────────────────────────────────────────── */
+
+.detalhe-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+.page-titulo {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+
+  &__id {
+    color: var(--color-text-secondary);
+    font-weight: 600;
+  }
+}
+
+::ng-deep .status-tag .p-tag {
+  font-size: 13px;
+  padding: 4px 12px;
+}
+
+/* ─── Cards ──────────────────────────────────────────── */
+
+.detalhe-card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 20px 24px;
+
+  @include sm { padding: 16px; }
+}
+
+.card-titulo {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin: 0 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ─── Info grid ──────────────────────────────────────── */
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 32px;
+
+  @include sm { grid-template-columns: 1fr; gap: 16px; }
+}
+
+.info-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-valor {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+
+  &--arte {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.arte-sim { color: var(--color-success); font-size: 16px; }
+.arte-nao { color: var(--color-text-secondary); font-size: 16px; }
+
+/* ─── Tabela de itens ────────────────────────────────── */
+
+.col-centro { text-align: center; }
+
+.col-material { font-weight: 500; }
+
+.col-valor {
+  text-align: right;
+  width: 130px;
+
+  &--destaque { font-weight: 600; color: var(--color-text-primary); }
+}
+
+.tamanho-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  padding: 2px 8px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: 0.3px;
+}
+
+.linha-total td {
+  border-top: 2px solid var(--color-border);
+  padding-top: 12px;
+}
+
+.total-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+
+.total-valor {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-align: right;
+}
+
+/* ─── Mobile itens ───────────────────────────────────── */
+
+.hide-mobile { @include sm { display: none; } }
+.show-mobile { display: none; @include sm { display: block; } }
+
+.item-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 10px;
+  background: var(--color-surface);
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  &__nome {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--color-text-primary);
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--color-border);
+
+    &:last-of-type { border-bottom: none; }
+  }
+
+  &__label { color: var(--color-text-secondary); font-weight: 500; }
+
+  &__subtotal { font-weight: 700; color: var(--color-primary); }
+}
+
+.mobile-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0 0;
+  border-top: 2px solid var(--color-border);
+  margin-top: 4px;
+
+  &__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+
+  &__valor {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+}
+
+/* ─── Atualizar Status ───────────────────────────────── */
+
+.status-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  p-dropdown { width: 220px; }
+
+  @include sm {
+    flex-direction: column;
+    align-items: stretch;
+
+    p-dropdown { width: 100%; }
+
+    ::ng-deep .p-button { width: 100%; }
+  }
+}

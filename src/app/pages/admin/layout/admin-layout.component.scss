@@ -275,6 +275,7 @@
   overflow-y: auto;
   padding: 24px;
   background: var(--color-surface);
+  position: relative;
 
   @include sm {
     padding: 16px;
