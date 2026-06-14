@@ -59,8 +59,11 @@
   <div class="table-wrapper hide-mobile" *ngIf="!carregando">
     <p-table [value]="pedidosFiltrados"
              styleClass="p-datatable-sm p-datatable-striped"
-             [paginator]="pedidosFiltrados.length > 10"
-             [rows]="10">
+             [paginator]="true"
+             [rows]="10"
+             [rowsPerPageOptions]="rowsPerPageOptions"
+             [showCurrentPageReport]="true"
+             currentPageReportTemplate="{first}–{last} de {totalRecords} pedidos">
       <ng-template pTemplate="header">
         <tr>
           <th class="col-id">#</th>
@@ -100,7 +103,7 @@
 
   <!-- Cards (mobile) -->
   <div *ngIf="!carregando" class="mobile-list show-mobile">
-    <div class="mobile-card" *ngFor="let pedido of pedidosFiltrados">
+    <div class="mobile-card" *ngFor="let pedido of pedidosMobileVisiveis">
       <div class="mobile-card__header">
         <div class="mobile-card__header-info">
           <span class="mobile-card__id">#{{ pedido.id }}</span>
@@ -126,9 +129,18 @@
                   size="small" (onClick)="verDetalhe(pedido.id)" />
       </div>
     </div>
+
     <p *ngIf="pedidosFiltrados.length === 0" class="empty-msg">
       Nenhum pedido encontrado.
     </p>
+
+    <p-paginator *ngIf="pedidosFiltrados.length > 0"
+                 [rows]="rowsMobile"
+                 [totalRecords]="pedidosFiltrados.length"
+                 [rowsPerPageOptions]="rowsPerPageOptions"
+                 [first]="firstMobile"
+                 (onPageChange)="onPageMobile($event)"
+                 styleClass="mobile-paginator" />
   </div>
 
 </div>

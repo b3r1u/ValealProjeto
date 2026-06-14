@@ -17,6 +17,19 @@ export class PedidosAdminComponent implements OnInit {
   filtroBusca = '';
   filtroStatus: string | null = null;
 
+  readonly rowsPerPageOptions = [10, 15, 20, 25];
+  firstMobile = 0;
+  rowsMobile = 10;
+
+  get pedidosMobileVisiveis(): Pedido[] {
+    return this.pedidosFiltrados.slice(this.firstMobile, this.firstMobile + this.rowsMobile);
+  }
+
+  onPageMobile(event: { first?: number; rows?: number }): void {
+    this.firstMobile = event.first ?? 0;
+    this.rowsMobile  = event.rows  ?? 10;
+  }
+
   readonly opcoesStatus = [
     { label: 'Todos os status', value: null },
     { label: 'Aguardando Arte', value: 'aguardando_arte' },
@@ -50,6 +63,7 @@ export class PedidosAdminComponent implements OnInit {
   }
 
   aplicarFiltros(): void {
+    this.firstMobile = 0;
     this.pedidosFiltrados = this.pedidos.filter(p => {
       const matchBusca = !this.filtroBusca ||
         String(p.id).includes(this.filtroBusca) ||
