@@ -1,0 +1,96 @@
+@layer tailwind-base, primeng, tailwind-utilities;
+
+@import 'primeicons/primeicons.css';
+
+:root {
+  /* Paleta principal */
+  --color-primary:        #1A3A5C;
+  --color-primary-light:  #2A5480;
+  --color-accent:         #E8760A;
+  --color-accent-light:   #F59340;
+
+  /* Superfícies */
+  --color-surface:        #F4F6F9;
+  --color-surface-card:   #FFFFFF;
+  --color-border:         #DEE2E8;
+
+  /* Texto */
+  --color-text-primary:   #1A1F2E;
+  --color-text-secondary: #6B7280;
+
+  /* Status */
+  --color-success:        #22C55E;
+  --color-warning:        #F59E0B;
+  --color-danger:         #EF4444;
+  --color-info:           #3B82F6;
+
+  /* Raios de borda */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+
+  /* Sombras */
+  --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.10);
+  --shadow-lg:   0 8px 24px rgba(0, 0, 0, 0.12);
+
+  /* Tipografia */
+  --font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* Reset e base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-family);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Botão acento (laranja) — usado com <p-button styleClass="btn-accent"> */
+.btn-accent .p-button {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+
+  &:hover {
+    background-color: var(--color-accent-light);
+    border-color: var(--color-accent-light);
+  }
+}
+
+/* Card padrão Valeal — usado com <p-card styleClass="valeal-card"> */
+.valeal-card .p-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  background: var(--color-surface-card);
+}
+
+/* Utilitário de largura total em inputs */
+.w-full {
+  width: 100%;
+}
+
+/* Campo de formulário padrão */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

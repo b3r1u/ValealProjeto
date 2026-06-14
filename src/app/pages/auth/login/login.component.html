@@ -1,0 +1,109 @@
+<div class="login-container">
+
+  <!-- Painel esquerdo: gradiente azul, visível apenas desktop -->
+  <div class="login-panel-left">
+    <div class="login-panel-content">
+
+      <div class="login-brand-logo">
+        <i class="pi pi-th-large"></i>
+        <span>Valeal Fardamentos</span>
+      </div>
+
+      <h1 class="login-tagline">
+        Fardamentos sob medida<br>para sua equipe
+      </h1>
+
+      <ul class="login-bullets">
+        <li>
+          <i class="pi pi-check-circle"></i>
+          <span>Variedade de materiais e tamanhos</span>
+        </li>
+        <li>
+          <i class="pi pi-check-circle"></i>
+          <span>Preços especiais no atacado</span>
+        </li>
+        <li>
+          <i class="pi pi-check-circle"></i>
+          <span>Atendimento com designer exclusivo</span>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+
+  <!-- Painel direito: formulário -->
+  <div class="login-form-wrapper">
+
+    <!-- Logo visível apenas no mobile -->
+    <div class="login-mobile-logo">
+      <i class="pi pi-th-large"></i>
+      <span>Valeal Fardamentos</span>
+    </div>
+
+    <h2 class="login-title">Bem-vindo de volta</h2>
+    <p class="login-subtitle">Acesse sua conta</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="login-form">
+
+      <div class="field">
+        <label for="email" class="field-label">E-mail</label>
+        <input
+          pInputText
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="seuemail&#64;exemplo.com"
+          [class.ng-invalid]="email.invalid && email.touched"
+          [class.ng-dirty]="email.touched"
+        />
+        <small class="p-error" *ngIf="email.touched && email.hasError('required')">
+          E-mail obrigatório.
+        </small>
+        <small class="p-error" *ngIf="email.touched && email.hasError('email')">
+          E-mail inválido.
+        </small>
+      </div>
+
+      <div class="field">
+        <label for="senha" class="field-label">Senha</label>
+        <p-password
+          inputId="senha"
+          formControlName="senha"
+          placeholder="Mínimo 6 caracteres"
+          [toggleMask]="true"
+          [feedback]="false"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+        />
+        <small class="p-error" *ngIf="senha.touched && senha.hasError('required')">
+          Senha obrigatória.
+        </small>
+        <small class="p-error" *ngIf="senha.touched && senha.hasError('minlength')">
+          Mínimo 6 caracteres.
+        </small>
+      </div>
+
+      <div class="login-erro" *ngIf="erro">
+        <i class="pi pi-exclamation-circle"></i>
+        {{ erro }}
+      </div>
+
+      <p-button
+        type="submit"
+        label="Entrar"
+        icon="pi pi-sign-in"
+        [loading]="carregando"
+        [disabled]="carregando"
+        styleClass="w-full"
+      />
+
+    </form>
+
+    <p class="login-signup">
+      Não tem conta?
+      <a routerLink="/cadastro">Cadastre-se</a>
+    </p>
+
+  </div>
+
+</div>
