@@ -158,7 +158,8 @@
                   type="button" (onClick)="cancelar()" />
         <p-button [label]="salvando ? 'Salvando...' : (editando ? 'Atualizar Material' : 'Criar Material')"
                   icon="pi pi-check" type="submit"
-                  [loading]="salvando" styleClass="btn-accent" />
+                  [loading]="salvando" [disabled]="form.invalid"
+                  styleClass="btn-accent" />
       </div>
     </div>
 
