@@ -70,7 +70,7 @@ export class DashboardComponent implements OnInit {
   statusLabel(status: StatusPedido): string        { return STATUS_LABEL[status]; }
   statusSeverity(status: StatusPedido): TagSeverity { return STATUS_SEVERITY[status]; }
 
-  private moeda(valor: number): string {
+  moeda(valor: number): string {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 }

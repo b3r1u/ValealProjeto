@@ -1,1 +1,134 @@
-<p>pedidos-admin works!</p>
+<div class="pedidos-page">
+
+  <!-- Cabeçalho -->
+  <div class="page-header">
+    <div class="page-header__titulo">
+      <h1 class="page-titulo">Pedidos</h1>
+      <span class="page-contagem" *ngIf="!carregando">{{ pedidos.length }} pedido(s)</span>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-bar">
+    <div class="filtro-busca">
+      <i class="pi pi-search"></i>
+      <input pInputText type="text" placeholder="Buscar por # ou cliente..."
+             [(ngModel)]="filtroBusca" (ngModelChange)="aplicarFiltros()" />
+    </div>
+    <p-dropdown [options]="opcoesStatus" [(ngModel)]="filtroStatus"
+                (onChange)="aplicarFiltros()"
+                optionLabel="label" optionValue="value"
+                placeholder="Todos os status" />
+  </div>
+
+  <!-- Skeleton loading -->
+  <ng-container *ngIf="carregando">
+    <div class="skeleton-table hide-mobile">
+      <div class="skeleton-row skeleton-header">
+        <p-skeleton *ngFor="let h of [1,2,3,4,5,6,7]" height="14px" />
+      </div>
+      <div class="skeleton-row" *ngFor="let p of placeholders">
+        <p-skeleton width="40px"  height="14px" />
+        <p-skeleton width="130px" height="14px" />
+        <p-skeleton width="110px" height="22px" borderRadius="12px" />
+        <p-skeleton width="50px"  height="14px" />
+        <p-skeleton width="80px"  height="14px" />
+        <p-skeleton width="80px"  height="14px" />
+        <p-skeleton width="80px"  height="32px" borderRadius="6px" />
+      </div>
+    </div>
+    <div class="show-mobile">
+      <div class="mobile-card" *ngFor="let p of placeholders">
+        <div class="mobile-card__header">
+          <p-skeleton width="120px" height="16px" />
+          <p-skeleton width="100px" height="22px" borderRadius="12px" />
+        </div>
+        <div class="mobile-card__row">
+          <p-skeleton width="60px" height="13px" />
+          <p-skeleton width="80px" height="13px" />
+        </div>
+        <div class="mobile-card__row">
+          <p-skeleton width="50px" height="13px" />
+          <p-skeleton width="60px" height="13px" />
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Tabela (desktop) -->
+  <div class="table-wrapper hide-mobile" *ngIf="!carregando">
+    <p-table [value]="pedidosFiltrados"
+             styleClass="p-datatable-sm p-datatable-striped"
+             [paginator]="pedidosFiltrados.length > 10"
+             [rows]="10">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="col-id">#</th>
+          <th>Cliente</th>
+          <th>Status</th>
+          <th class="col-centro">Peças</th>
+          <th class="col-total">Total</th>
+          <th>Data</th>
+          <th class="col-acoes">Ações</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-pedido>
+        <tr>
+          <td class="col-id col-id--valor">#{{ pedido.id }}</td>
+          <td class="col-cliente">{{ nomeCliente(pedido.cliente_id) }}</td>
+          <td>
+            <p-tag [value]="statusLabel(pedido.status)"
+                   [severity]="statusSeverity(pedido.status)" />
+          </td>
+          <td class="col-centro">{{ totalPecas(pedido) }}</td>
+          <td class="col-total col-total--valor">{{ formatarTotal(pedido.total) }}</td>
+          <td class="col-data">{{ formatarData(pedido.criado_em) }}</td>
+          <td class="col-acoes">
+            <p-button icon="pi pi-eye" severity="secondary" [outlined]="true" size="small"
+                      pTooltip="Ver detalhe" tooltipPosition="top"
+                      (onClick)="verDetalhe(pedido.id)" />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="empty-msg">Nenhum pedido encontrado.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Cards (mobile) -->
+  <div *ngIf="!carregando" class="mobile-list show-mobile">
+    <div class="mobile-card" *ngFor="let pedido of pedidosFiltrados">
+      <div class="mobile-card__header">
+        <div class="mobile-card__header-info">
+          <span class="mobile-card__id">#{{ pedido.id }}</span>
+          <span class="mobile-card__title">{{ nomeCliente(pedido.cliente_id) }}</span>
+        </div>
+        <p-tag [value]="statusLabel(pedido.status)"
+               [severity]="statusSeverity(pedido.status)" />
+      </div>
+      <div class="mobile-card__row">
+        <span class="mobile-card__label">Total</span>
+        <span class="mobile-card__total">{{ formatarTotal(pedido.total) }}</span>
+      </div>
+      <div class="mobile-card__row">
+        <span class="mobile-card__label">Peças</span>
+        <span>{{ totalPecas(pedido) }} un.</span>
+      </div>
+      <div class="mobile-card__row">
+        <span class="mobile-card__label">Data</span>
+        <span>{{ formatarData(pedido.criado_em) }}</span>
+      </div>
+      <div class="mobile-card__actions">
+        <p-button label="Ver detalhe" icon="pi pi-eye" severity="secondary" [outlined]="true"
+                  size="small" (onClick)="verDetalhe(pedido.id)" />
+      </div>
+    </div>
+    <p *ngIf="pedidosFiltrados.length === 0" class="empty-msg">
+      Nenhum pedido encontrado.
+    </p>
+  </div>
+
+</div>

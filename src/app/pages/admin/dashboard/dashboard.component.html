@@ -50,7 +50,7 @@
     <ng-container *ngIf="!carregando">
       <div class="pedido-row" *ngFor="let pedido of ultimosPedidos">
         <span class="pedido-id">#{{ pedido.id }}</span>
-        <span class="pedido-total">{{ pedido.total | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+        <span class="pedido-total">{{ moeda(pedido.total) }}</span>
         <p-tag
           [value]="statusLabel(pedido.status)"
           [severity]="statusSeverity(pedido.status)" />
