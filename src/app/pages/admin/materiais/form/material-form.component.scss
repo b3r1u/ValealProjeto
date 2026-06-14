@@ -1,11 +1,11 @@
 @use '../../../../../styles/breakpoints' as *;
 
-/* ─── Layout ───────────────────────────────────────── */
+/* ─── Layout geral ──────────────────────────────────── */
 
 .form-page {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .page-header {
@@ -20,39 +20,43 @@
 }
 
 .page-titulo {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--color-text-primary);
   margin: 0;
 }
 
-/* ─── Cards de seção ───────────────────────────────── */
+/* ─── Cards ─────────────────────────────────────────── */
 
 .form-card {
   background: var(--color-surface-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  padding: 24px;
+  padding: 20px;
 
-  @include sm { padding: 16px; }
+  & + & { margin-top: 12px; }
+
+  @include sm { padding: 14px; }
 }
 
 .form-section-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin: 0 0 20px;
-  padding-bottom: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin: 0 0 16px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--color-border);
 }
 
-/* ─── Grid de campos ───────────────────────────────── */
+/* ─── Grid de campos ─────────────────────────────────── */
 
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px;
 
   @include sm { grid-template-columns: 1fr; }
 }
@@ -60,46 +64,80 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 
   &.full-width { grid-column: 1 / -1; }
-
-  &--checkbox {
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    padding-top: 24px;
-
-    label {
-      font-size: 14px;
-      color: var(--color-text-primary);
-      cursor: pointer;
-    }
-
-    @include sm { padding-top: 0; }
-  }
-
-  &--acoes {
-    justify-content: flex-end;
-  }
 }
 
 .field-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--color-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.5px;
 }
 
-/* ─── Tamanhos ─────────────────────────────────────── */
+/* ─── Pills de técnicas ──────────────────────────────── */
+
+.tecnicas-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tecnica-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  line-height: 1;
+
+  i { font-size: 13px; }
+
+  &:hover {
+    border-color: var(--color-accent-light);
+    color: var(--color-accent);
+  }
+
+  &--ativa {
+    border-color: var(--color-accent);
+    background: rgba(232, 118, 10, 0.07);
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+}
+
+/* ─── Descrição ──────────────────────────────────────── */
+
+.descricao-wrapper { position: relative; }
+
+.descricao-count {
+  display: block;
+  text-align: right;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-top: 3px;
+  transition: color 0.15s ease;
+
+  &--alerta { color: var(--color-warning); font-weight: 600; }
+}
+
+/* ─── Tamanhos e Preços ──────────────────────────────── */
 
 .tamanhos-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--color-border);
 
   .form-section-title { margin: 0; padding: 0; border: none; }
@@ -108,95 +146,81 @@
 .tamanhos-empty {
   text-align: center;
   color: var(--color-text-secondary);
-  font-size: 14px;
-  padding: 24px 0;
+  font-size: 13px;
+  padding: 20px 0;
   margin: 0;
 }
 
 .tamanho-row {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  margin-bottom: 12px;
-  background: var(--color-surface);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
 
-  &:last-child { margin-bottom: 0; }
+  &:last-child { border-bottom: none; }
 }
 
 .tamanho-grid {
   display: grid;
-  grid-template-columns: 100px 1fr 1fr 120px 100px 140px;
-  gap: 12px;
+  grid-template-columns: 120px 1fr 1fr minmax(0, 1fr);
+  gap: 10px;
   align-items: start;
+  min-width: 0;
 
-  @include lg {
-    grid-template-columns: 100px 1fr 1fr 120px 100px;
-
-    .field--acoes { grid-column: 1 / -1; }
-  }
+  > * { min-width: 0; }
 
   @include md {
     grid-template-columns: 1fr 1fr;
-
-    .field--acoes { grid-column: 1 / -1; }
   }
 
   @include sm {
     grid-template-columns: 1fr;
-
-    .field--acoes { grid-column: 1; }
   }
 }
 
-.tamanho-acoes {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 100%;
-  padding-top: 24px;
-
-  @include md { padding-top: 0; }
-}
-
-.tamanho-ativo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  label {
-    font-size: 14px;
-    color: var(--color-text-primary);
-    cursor: pointer;
-  }
-}
-
-/* ─── Ações do formulário ──────────────────────────── */
+/* ─── Ações ──────────────────────────────────────────── */
 
 .form-acoes {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
+  padding-top: 4px;
+
+  &__direita {
+    display: flex;
+    gap: 10px;
+  }
 
   @include sm {
     flex-direction: column-reverse;
+    align-items: stretch;
 
+    &__direita { flex-direction: column-reverse; }
     ::ng-deep .p-button { width: 100%; }
   }
 }
 
-/* ─── Overrides PrimeNG ────────────────────────────── */
+/* ─── Overrides PrimeNG ──────────────────────────────── */
 
 ::ng-deep {
+  p-inputnumber,
   p-inputnumber .p-inputnumber,
   p-inputnumber .p-inputnumber input {
     width: 100%;
+    min-width: 0;
   }
 
-  p-dropdown .p-dropdown {
-    width: 100%;
-  }
+  p-dropdown .p-dropdown { width: 100%; }
 
   textarea.p-textarea {
-    resize: vertical;
+    resize: none;
+    min-height: 88px;
+    line-height: 1.6;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  textarea.descricao-textarea.p-textarea:enabled:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(232, 118, 10, 0.12);
+    outline: none;
   }
 }

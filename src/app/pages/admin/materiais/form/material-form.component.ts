@@ -17,11 +17,6 @@ export class MaterialFormComponent implements OnInit {
   carregando = false;
   salvando = false;
 
-  readonly opcoesTipo = [
-    { label: 'Liso',       value: 'liso' },
-    { label: 'Sublimação', value: 'sublimacao' },
-  ];
-
   readonly opcoesTamanho = [
     { label: 'PP',  value: 'PP'  },
     { label: 'P',   value: 'P'   },
@@ -41,12 +36,11 @@ export class MaterialFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      nome:               ['', Validators.required],
-      tipo:               ['liso', Validators.required],
-      descricao:          [''],
-      permite_sublimacao: [false],
-      ativo:              [true],
-      tamanhos:           this.fb.array([])
+      nome:        ['', Validators.required],
+      descricao:   [''],
+      sublimacao:  [false],
+      estamparia:  [false],
+      tamanhos:    this.fb.array([])
     });
 
     const id = this.route.snapshot.paramMap.get('id');
@@ -65,12 +59,10 @@ export class MaterialFormComponent implements OnInit {
 
   private criarTamanhoGroup(dados?: Partial<TamanhoMaterial>): FormGroup {
     return this.fb.group({
-      tamanho:             [dados?.tamanho            ?? '',   Validators.required],
-      preco_unitario:      [dados?.preco_unitario     ?? null, [Validators.required, Validators.min(0.01)]],
-      preco_atacado:       [dados?.preco_atacado      ?? null, [Validators.required, Validators.min(0.01)]],
-      qtd_minima_atacado:  [dados?.qtd_minima_atacado ?? 1,   [Validators.required, Validators.min(1)]],
-      estoque:             [dados?.estoque            ?? 0,   [Validators.required, Validators.min(0)]],
-      ativo:               [dados?.ativo              ?? true]
+      tamanho:            [dados?.tamanho           ?? '',   Validators.required],
+      preco_unitario:     [dados?.preco_unitario    ?? null, [Validators.required, Validators.min(0.01)]],
+      preco_atacado:      [dados?.preco_atacado     ?? null, [Validators.required, Validators.min(0.01)]],
+      qtd_minima_atacado: [dados?.qtd_minima_atacado ?? 1,  [Validators.required, Validators.min(1)]],
     });
   }
 
@@ -87,11 +79,10 @@ export class MaterialFormComponent implements OnInit {
     this.materiaisService.buscarPorId(id).subscribe({
       next: (material) => {
         this.form.patchValue({
-          nome:               material.nome,
-          tipo:               material.tipo,
-          descricao:          material.descricao,
-          permite_sublimacao: material.permite_sublimacao,
-          ativo:              material.ativo,
+          nome:       material.nome,
+          descricao:  material.descricao,
+          sublimacao: material.permite_sublimacao,
+          estamparia: false,
         });
 
         while (this.tamanhos.length) this.tamanhos.removeAt(0);
@@ -132,6 +123,41 @@ export class MaterialFormComponent implements OnInit {
         });
       }
     });
+  }
+
+  selecionarTecnica(tecnica: 'sublimacao' | 'estamparia'): void {
+    const ativa = this.form.get(tecnica)?.value;
+    this.form.patchValue({ sublimacao: false, estamparia: false });
+    if (!ativa) {
+      this.form.get(tecnica)?.setValue(true);
+    }
+  }
+
+  limparCampos(): void {
+    this.form.patchValue({ nome: '', descricao: '', sublimacao: false, estamparia: false });
+    while (this.tamanhos.length) this.tamanhos.removeAt(0);
+    this.adicionarTamanho();
+    this.form.markAsUntouched();
+    this.form.markAsPristine();
+  }
+
+  precoDisplay(index: number, campo: string): string {
+    const valor: number | null = (this.tamanhos.at(index) as FormGroup).get(campo)?.value;
+    if (!valor || valor <= 0) return '';
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  onPrecoInput(event: Event, index: number, campo: string): void {
+    const input = event.target as HTMLInputElement;
+    const digits = input.value.replace(/\D/g, '');
+    const centavos = parseInt(digits || '0', 10);
+    const valor = centavos / 100;
+    const grupo = this.tamanhos.at(index) as FormGroup;
+    grupo.get(campo)?.setValue(valor > 0 ? valor : null);
+    grupo.get(campo)?.markAsTouched();
+    input.value = valor > 0
+      ? valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+      : '';
   }
 
   cancelar(): void {

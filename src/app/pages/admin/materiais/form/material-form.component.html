@@ -9,14 +9,14 @@
     </div>
   </div>
 
-  <!-- Skeleton (edição carregando) -->
+  <!-- Skeleton -->
   <ng-container *ngIf="carregando">
     <div class="form-card">
-      <p-skeleton width="140px" height="18px" styleClass="mb-4" />
+      <p-skeleton width="120px" height="14px" styleClass="mb-3" />
       <div class="form-grid">
-        <div class="field" *ngFor="let f of [1,2,3,4]">
-          <p-skeleton width="100px" height="13px" styleClass="mb-2" />
-          <p-skeleton height="38px" />
+        <div class="field" *ngFor="let f of [1,2,3]">
+          <p-skeleton width="80px" height="11px" styleClass="mb-2" />
+          <p-skeleton height="36px" />
         </div>
       </div>
     </div>
@@ -25,7 +25,7 @@
   <!-- Formulário -->
   <form *ngIf="!carregando" [formGroup]="form" (ngSubmit)="salvar()">
 
-    <!-- Seção: Dados Básicos -->
+    <!-- Card: Dados Básicos -->
     <div class="form-card">
       <h2 class="form-section-title">Dados Básicos</h2>
 
@@ -34,44 +34,51 @@
         <!-- Nome -->
         <div class="field full-width">
           <label class="field-label" for="nome">Nome do Material *</label>
-          <input pInputText id="nome" formControlName="nome" placeholder="Ex: Camisa DryFit" class="w-full" />
+          <input pInputText id="nome" formControlName="nome"
+                 placeholder="Ex: Camisa DryFit" class="w-full" />
           <small class="p-error" *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
             Nome é obrigatório.
           </small>
         </div>
 
-        <!-- Tipo -->
-        <div class="field">
-          <label class="field-label" for="tipo">Tipo *</label>
-          <p-dropdown id="tipo" formControlName="tipo"
-                      [options]="opcoesTipo" optionLabel="label" optionValue="value"
-                      class="w-full" />
-        </div>
-
-        <!-- Permite Sublimação -->
-        <div class="field field--checkbox">
-          <p-checkbox formControlName="permite_sublimacao" [binary]="true" inputId="permite_sub" />
-          <label for="permite_sub">Permite Sublimação</label>
+        <!-- Técnicas de personalização -->
+        <div class="field full-width">
+          <label class="field-label">Técnicas de Personalização</label>
+          <div class="tecnicas-group">
+            <button type="button" class="tecnica-pill"
+                    [class.tecnica-pill--ativa]="form.get('sublimacao')?.value"
+                    (click)="selecionarTecnica('sublimacao')">
+              <i class="pi pi-check-circle" *ngIf="form.get('sublimacao')?.value"></i>
+              Sublimação
+            </button>
+            <button type="button" class="tecnica-pill"
+                    [class.tecnica-pill--ativa]="form.get('estamparia')?.value"
+                    (click)="selecionarTecnica('estamparia')">
+              <i class="pi pi-check-circle" *ngIf="form.get('estamparia')?.value"></i>
+              Estamparia
+            </button>
+          </div>
         </div>
 
         <!-- Descrição -->
         <div class="field full-width">
           <label class="field-label" for="descricao">Descrição</label>
-          <textarea pTextarea id="descricao" formControlName="descricao"
-                    rows="3" class="w-full"
-                    placeholder="Descreva o material..."></textarea>
-        </div>
-
-        <!-- Ativo -->
-        <div class="field field--checkbox">
-          <p-checkbox formControlName="ativo" [binary]="true" inputId="ativo" />
-          <label for="ativo">Material Ativo</label>
+          <div class="descricao-wrapper">
+            <textarea pTextarea id="descricao" formControlName="descricao"
+                      [autoResize]="true" rows="3" class="w-full descricao-textarea"
+                      maxlength="500"
+                      placeholder="Características do material, diferenciais e indicações de uso..."></textarea>
+            <span class="descricao-count"
+                  [class.descricao-count--alerta]="(form.get('descricao')?.value?.length || 0) > 450">
+              {{ form.get('descricao')?.value?.length || 0 }}/500
+            </span>
+          </div>
         </div>
 
       </div>
     </div>
 
-    <!-- Seção: Tamanhos e Preços -->
+    <!-- Card: Tamanhos e Preços -->
     <div class="form-card">
       <div class="tamanhos-header">
         <h2 class="form-section-title">Tamanhos e Preços</h2>
@@ -85,14 +92,14 @@
       </p>
 
       <div formArrayName="tamanhos">
-        <div class="tamanho-row" *ngFor="let ctrl of tamanhos.controls; let i = index"
+        <div class="tamanho-row"
+             *ngFor="let ctrl of tamanhos.controls; let i = index; let first = first"
              [formGroupName]="i">
-
           <div class="tamanho-grid">
 
             <!-- Tamanho -->
             <div class="field">
-              <label class="field-label">Tamanho *</label>
+              <span class="field-label" *ngIf="first">Tamanho *</span>
               <p-dropdown formControlName="tamanho"
                           [options]="opcoesTamanho" optionLabel="label" optionValue="value"
                           placeholder="Selecione" class="w-full" />
@@ -104,10 +111,10 @@
 
             <!-- Preço Unitário -->
             <div class="field">
-              <label class="field-label">Preço Unit. (R$) *</label>
-              <p-inputNumber formControlName="preco_unitario" mode="decimal"
-                             [minFractionDigits]="2" [maxFractionDigits]="2"
-                             [min]="0" class="w-full" />
+              <span class="field-label" *ngIf="first">Preço Unitário *</span>
+              <input pInputText class="w-full" placeholder="R$ 0,00" inputmode="numeric"
+                     [value]="precoDisplay(i, 'preco_unitario')"
+                     (input)="onPrecoInput($event, i, 'preco_unitario')" />
               <small class="p-error"
                      *ngIf="ctrl.get('preco_unitario')?.invalid && ctrl.get('preco_unitario')?.touched">
                 Preço inválido.
@@ -116,19 +123,19 @@
 
             <!-- Preço Atacado -->
             <div class="field">
-              <label class="field-label">Preço Atacado (R$) *</label>
-              <p-inputNumber formControlName="preco_atacado" mode="decimal"
-                             [minFractionDigits]="2" [maxFractionDigits]="2"
-                             [min]="0" class="w-full" />
+              <span class="field-label" *ngIf="first">Preço Atacado *</span>
+              <input pInputText class="w-full" placeholder="R$ 0,00" inputmode="numeric"
+                     [value]="precoDisplay(i, 'preco_atacado')"
+                     (input)="onPrecoInput($event, i, 'preco_atacado')" />
               <small class="p-error"
                      *ngIf="ctrl.get('preco_atacado')?.invalid && ctrl.get('preco_atacado')?.touched">
                 Preço inválido.
               </small>
             </div>
 
-            <!-- Qtd Mínima Atacado -->
+            <!-- Qtd Mínima -->
             <div class="field">
-              <label class="field-label">Qtd. Mín. Atacado *</label>
+              <span class="field-label" *ngIf="first">Qtd. Mín. Atacado *</span>
               <p-inputNumber formControlName="qtd_minima_atacado"
                              [min]="1" [showButtons]="true" class="w-full" />
               <small class="p-error"
@@ -137,42 +144,22 @@
               </small>
             </div>
 
-            <!-- Estoque -->
-            <div class="field">
-              <label class="field-label">Estoque</label>
-              <p-inputNumber formControlName="estoque"
-                             [min]="0" [showButtons]="true" class="w-full" />
-            </div>
-
-            <!-- Ativo + Remover -->
-            <div class="field field--acoes">
-              <div class="tamanho-acoes">
-                <div class="tamanho-ativo">
-                  <p-checkbox formControlName="ativo" [binary]="true"
-                              [inputId]="'ativo-' + i" />
-                  <label [for]="'ativo-' + i">Ativo</label>
-                </div>
-                <p-button icon="pi pi-trash" severity="danger" [outlined]="true"
-                          size="small" type="button"
-                          [disabled]="tamanhos.length === 1"
-                          (onClick)="removerTamanho(i)" />
-              </div>
-            </div>
-
           </div>
-
         </div>
       </div>
-
     </div>
 
     <!-- Ações -->
     <div class="form-acoes">
-      <p-button label="Cancelar" severity="secondary" [outlined]="true"
-                type="button" (onClick)="cancelar()" />
-      <p-button [label]="salvando ? 'Salvando...' : (editando ? 'Atualizar' : 'Criar Material')"
-                icon="pi pi-check" type="submit"
-                [loading]="salvando" styleClass="btn-accent" />
+      <p-button label="Limpar campos" icon="pi pi-eraser" severity="secondary" [text]="true"
+                type="button" (onClick)="limparCampos()" />
+      <div class="form-acoes__direita">
+        <p-button label="Cancelar" severity="secondary" [outlined]="true"
+                  type="button" (onClick)="cancelar()" />
+        <p-button [label]="salvando ? 'Salvando...' : (editando ? 'Atualizar Material' : 'Criar Material')"
+                  icon="pi pi-check" type="submit"
+                  [loading]="salvando" styleClass="btn-accent" />
+      </div>
     </div>
 
   </form>

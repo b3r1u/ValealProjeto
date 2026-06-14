@@ -4,7 +4,8 @@
 
 :host {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background: var(--color-surface);
 }
 
@@ -186,6 +187,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  overflow: hidden;
 }
 
 /* ─── Topbar ──────────────────────────────────────── */
@@ -270,6 +272,7 @@
 
 .content-area {
   flex: 1;
+  overflow-y: auto;
   padding: 24px;
   background: var(--color-surface);
 
