@@ -79,6 +79,59 @@ html, body {
   width: 100%;
 }
 
+/* ─── Status dot nos p-tag ──────────────────────────────── */
+.p-tag-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.85;
+    flex-shrink: 0;
+  }
+}
+
+/* ─── Input / Select — foco em cor accent ───────────────── */
+body .p-inputtext:enabled:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(232, 118, 10, 0.15);
+}
+
+body .p-dropdown:not(.p-disabled).p-focus,
+body .p-select:not(.p-disabled).p-focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(232, 118, 10, 0.15);
+}
+
+/* ─── Paginador customizado ─────────────────────────────── */
+.p-paginator {
+  background: transparent;
+  border: none;
+  padding: 12px 0 2px;
+}
+
+.p-paginator-page.p-highlight {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.p-paginator-page:not(.p-highlight):hover,
+.p-paginator-prev:not(.p-disabled):hover,
+.p-paginator-next:not(.p-disabled):hover,
+.p-paginator-first:not(.p-disabled):hover,
+.p-paginator-last:not(.p-disabled):hover {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-primary);
+}
+
 /* Campo de formulário padrão */
 .field {
   display: flex;
