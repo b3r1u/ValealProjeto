@@ -1,1 +1,63 @@
-<p>dashboard works!</p>
+<div class="dashboard">
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+
+    <ng-container *ngIf="carregando">
+      <div class="kpi-card" *ngFor="let p of placeholders">
+        <div class="kpi-icon kpi-icon--skeleton">
+          <p-skeleton width="24px" height="24px" />
+        </div>
+        <div class="kpi-body">
+          <p-skeleton width="110px" height="13px" styleClass="mb-2" />
+          <p-skeleton width="70px" height="28px" />
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!carregando">
+      <div class="kpi-card kpi-card--{{ kpi.cor }}" *ngFor="let kpi of kpis">
+        <div class="kpi-icon">
+          <i class="pi {{ kpi.icone }}"></i>
+        </div>
+        <div class="kpi-body">
+          <p class="kpi-label">{{ kpi.label }}</p>
+          <p class="kpi-valor">{{ kpi.valor }}</p>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <!-- Últimos Pedidos -->
+  <div class="secao-card">
+    <div class="secao-header">
+      <h2 class="secao-titulo">Últimos Pedidos</h2>
+      <a routerLink="/admin/pedidos" class="secao-link">
+        Ver todos <i class="pi pi-arrow-right"></i>
+      </a>
+    </div>
+
+    <ng-container *ngIf="carregando">
+      <div class="pedido-skeleton" *ngFor="let p of placeholders">
+        <p-skeleton width="60px" height="14px" />
+        <p-skeleton width="120px" height="14px" />
+        <p-skeleton width="80px" height="22px" borderRadius="12px" />
+        <p-skeleton width="90px" height="14px" />
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!carregando">
+      <div class="pedido-row" *ngFor="let pedido of ultimosPedidos">
+        <span class="pedido-id">#{{ pedido.id }}</span>
+        <span class="pedido-total">{{ pedido.total | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+        <p-tag
+          [value]="statusLabel(pedido.status)"
+          [severity]="statusSeverity(pedido.status)" />
+        <span class="pedido-data">{{ pedido.criado_em | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </ng-container>
+
+  </div>
+
+</div>

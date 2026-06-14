@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
 import { AdminRoutingModule } from './admin-routing.module';
 import { TooltipModule } from 'primeng/tooltip';
+import { SkeletonModule } from 'primeng/skeleton';
+import { TagModule } from 'primeng/tag';
 
 import { AdminLayoutComponent } from './layout/admin-layout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -21,6 +23,6 @@ import { FuncionariosComponent } from './funcionarios/funcionarios.component';
     PedidoDetalheComponent,
     FuncionariosComponent,
   ],
-  imports: [SharedModule, AdminRoutingModule, TooltipModule]
+  imports: [SharedModule, AdminRoutingModule, TooltipModule, SkeletonModule, TagModule]
 })
 export class AdminModule {}
