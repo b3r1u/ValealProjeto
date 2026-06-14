@@ -1,0 +1,202 @@
+@use '../../../../../styles/breakpoints' as *;
+
+/* ─── Layout ───────────────────────────────────────── */
+
+.form-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+
+  &__back {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+.page-titulo {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* ─── Cards de seção ───────────────────────────────── */
+
+.form-card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+
+  @include sm { padding: 16px; }
+}
+
+.form-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ─── Grid de campos ───────────────────────────────── */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @include sm { grid-template-columns: 1fr; }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &.full-width { grid-column: 1 / -1; }
+
+  &--checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-top: 24px;
+
+    label {
+      font-size: 14px;
+      color: var(--color-text-primary);
+      cursor: pointer;
+    }
+
+    @include sm { padding-top: 0; }
+  }
+
+  &--acoes {
+    justify-content: flex-end;
+  }
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* ─── Tamanhos ─────────────────────────────────────── */
+
+.tamanhos-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+
+  .form-section-title { margin: 0; padding: 0; border: none; }
+}
+
+.tamanhos-empty {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  padding: 24px 0;
+  margin: 0;
+}
+
+.tamanho-row {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 12px;
+  background: var(--color-surface);
+
+  &:last-child { margin-bottom: 0; }
+}
+
+.tamanho-grid {
+  display: grid;
+  grid-template-columns: 100px 1fr 1fr 120px 100px 140px;
+  gap: 12px;
+  align-items: start;
+
+  @include lg {
+    grid-template-columns: 100px 1fr 1fr 120px 100px;
+
+    .field--acoes { grid-column: 1 / -1; }
+  }
+
+  @include md {
+    grid-template-columns: 1fr 1fr;
+
+    .field--acoes { grid-column: 1 / -1; }
+  }
+
+  @include sm {
+    grid-template-columns: 1fr;
+
+    .field--acoes { grid-column: 1; }
+  }
+}
+
+.tamanho-acoes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding-top: 24px;
+
+  @include md { padding-top: 0; }
+}
+
+.tamanho-ativo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  label {
+    font-size: 14px;
+    color: var(--color-text-primary);
+    cursor: pointer;
+  }
+}
+
+/* ─── Ações do formulário ──────────────────────────── */
+
+.form-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  @include sm {
+    flex-direction: column-reverse;
+
+    ::ng-deep .p-button { width: 100%; }
+  }
+}
+
+/* ─── Overrides PrimeNG ────────────────────────────── */
+
+::ng-deep {
+  p-inputnumber .p-inputnumber,
+  p-inputnumber .p-inputnumber input {
+    width: 100%;
+  }
+
+  p-dropdown .p-dropdown {
+    width: 100%;
+  }
+
+  textarea.p-textarea {
+    resize: vertical;
+  }
+}

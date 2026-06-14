@@ -1,8 +1,140 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { MateriaisService } from '../../../../services/materiais.service';
+import { TamanhoMaterial } from '../../../../models/material.model';
 
 @Component({
   selector: 'app-material-form',
   templateUrl: './material-form.component.html',
   styleUrls: ['./material-form.component.scss']
 })
-export class MaterialFormComponent {}
+export class MaterialFormComponent implements OnInit {
+  form!: FormGroup;
+  editando = false;
+  materialId: number | null = null;
+  carregando = false;
+  salvando = false;
+
+  readonly opcoesTipo = [
+    { label: 'Liso',       value: 'liso' },
+    { label: 'Sublimação', value: 'sublimacao' },
+  ];
+
+  readonly opcoesTamanho = [
+    { label: 'PP',  value: 'PP'  },
+    { label: 'P',   value: 'P'   },
+    { label: 'M',   value: 'M'   },
+    { label: 'G',   value: 'G'   },
+    { label: 'GG',  value: 'GG'  },
+    { label: 'XGG', value: 'XGG' },
+  ];
+
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private materiaisService: MateriaisService,
+    private messageService: MessageService
+  ) {}
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      nome:               ['', Validators.required],
+      tipo:               ['liso', Validators.required],
+      descricao:          [''],
+      permite_sublimacao: [false],
+      ativo:              [true],
+      tamanhos:           this.fb.array([])
+    });
+
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.editando = true;
+      this.materialId = +id;
+      this.carregarMaterial(+id);
+    } else {
+      this.adicionarTamanho();
+    }
+  }
+
+  get tamanhos(): FormArray {
+    return this.form.get('tamanhos') as FormArray;
+  }
+
+  private criarTamanhoGroup(dados?: Partial<TamanhoMaterial>): FormGroup {
+    return this.fb.group({
+      tamanho:             [dados?.tamanho            ?? '',   Validators.required],
+      preco_unitario:      [dados?.preco_unitario     ?? null, [Validators.required, Validators.min(0.01)]],
+      preco_atacado:       [dados?.preco_atacado      ?? null, [Validators.required, Validators.min(0.01)]],
+      qtd_minima_atacado:  [dados?.qtd_minima_atacado ?? 1,   [Validators.required, Validators.min(1)]],
+      estoque:             [dados?.estoque            ?? 0,   [Validators.required, Validators.min(0)]],
+      ativo:               [dados?.ativo              ?? true]
+    });
+  }
+
+  adicionarTamanho(): void {
+    this.tamanhos.push(this.criarTamanhoGroup());
+  }
+
+  removerTamanho(i: number): void {
+    this.tamanhos.removeAt(i);
+  }
+
+  private carregarMaterial(id: number): void {
+    this.carregando = true;
+    this.materiaisService.buscarPorId(id).subscribe({
+      next: (material) => {
+        this.form.patchValue({
+          nome:               material.nome,
+          tipo:               material.tipo,
+          descricao:          material.descricao,
+          permite_sublimacao: material.permite_sublimacao,
+          ativo:              material.ativo,
+        });
+
+        while (this.tamanhos.length) this.tamanhos.removeAt(0);
+        material.tamanhos.forEach(t => this.tamanhos.push(this.criarTamanhoGroup(t)));
+
+        this.carregando = false;
+      }
+    });
+  }
+
+  salvar(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.salvando = true;
+    const dados = this.form.value;
+
+    const obs = this.editando && this.materialId
+      ? this.materiaisService.editar(this.materialId, dados)
+      : this.materiaisService.criar(dados);
+
+    obs.subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.editando ? 'Atualizado' : 'Criado',
+          detail: `Material ${this.editando ? 'atualizado' : 'criado'} com sucesso.`
+        });
+        setTimeout(() => this.router.navigate(['/admin/materiais']), 1200);
+      },
+      error: () => {
+        this.salvando = false;
+        this.messageService.add({
+          severity: 'error', summary: 'Erro',
+          detail: 'Não foi possível salvar o material.'
+        });
+      }
+    });
+  }
+
+  cancelar(): void {
+    this.router.navigate(['/admin/materiais']);
+  }
+}

@@ -11,6 +11,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { CheckboxModule } from 'primeng/checkbox';
+import { InputTextarea } from 'primeng/inputtextarea';
 
 import { AdminLayoutComponent } from './layout/admin-layout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -35,6 +38,7 @@ import { FuncionariosComponent } from './funcionarios/funcionarios.component';
     TooltipModule, SkeletonModule, TagModule,
     TableModule, ButtonModule, InputTextModule, DropdownModule,
     ConfirmDialogModule, ToastModule,
+    InputNumberModule, CheckboxModule, InputTextarea,
   ],
   providers: [MessageService, ConfirmationService]
 })
