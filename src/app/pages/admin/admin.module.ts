@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
 import { AdminRoutingModule } from './admin-routing.module';
+import { TooltipModule } from 'primeng/tooltip';
+
+import { AdminLayoutComponent } from './layout/admin-layout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MateriaisListComponent } from './materiais/list/materiais-list.component';
 import { MaterialFormComponent } from './materiais/form/material-form.component';
@@ -10,13 +13,14 @@ import { FuncionariosComponent } from './funcionarios/funcionarios.component';
 
 @NgModule({
   declarations: [
+    AdminLayoutComponent,
     DashboardComponent,
     MateriaisListComponent,
     MaterialFormComponent,
     PedidosAdminComponent,
     PedidoDetalheComponent,
-    FuncionariosComponent
+    FuncionariosComponent,
   ],
-  imports: [SharedModule, AdminRoutingModule]
+  imports: [SharedModule, AdminRoutingModule, TooltipModule]
 })
 export class AdminModule {}

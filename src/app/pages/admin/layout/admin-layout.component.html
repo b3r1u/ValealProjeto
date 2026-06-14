@@ -1,0 +1,61 @@
+<!-- Overlay mobile -->
+<div
+  class="sidebar-overlay"
+  *ngIf="sidebarAberta"
+  (click)="fecharSidebar()"
+></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" [class.open]="sidebarAberta">
+
+  <div class="sidebar-logo">
+    <i class="pi pi-th-large"></i>
+    <span class="sidebar-logo-text">Valeal</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a
+      *ngFor="let item of navItems"
+      class="nav-item"
+      [routerLink]="item.route"
+      routerLinkActive="nav-item--ativo"
+      [routerLinkActiveOptions]="{ exact: !!item.exact }"
+      [pTooltip]="item.label"
+      tooltipPosition="right"
+      (click)="fecharSidebar()"
+    >
+      <i class="pi {{ item.icon }}"></i>
+      <span class="nav-item-label">{{ item.label }}</span>
+    </a>
+  </nav>
+
+  <button class="sidebar-logout" (click)="logout()">
+    <i class="pi pi-sign-out"></i>
+    <span class="nav-item-label">Sair</span>
+  </button>
+
+</aside>
+
+<!-- Área principal -->
+<div class="main-wrapper">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <button class="topbar-hamburger" (click)="toggleSidebar()" aria-label="Menu">
+      <i class="pi pi-bars"></i>
+    </button>
+
+    <h1 class="topbar-titulo">{{ tituloPagina }}</h1>
+
+    <div class="topbar-usuario">
+      <span class="topbar-nome">{{ usuario?.nome }}</span>
+      <div class="topbar-avatar">{{ iniciais }}</div>
+    </div>
+  </header>
+
+  <!-- Conteúdo -->
+  <main class="content-area">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

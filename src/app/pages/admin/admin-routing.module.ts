@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AdminLayoutComponent } from './layout/admin-layout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MateriaisListComponent } from './materiais/list/materiais-list.component';
 import { MaterialFormComponent } from './materiais/form/material-form.component';
@@ -8,13 +9,19 @@ import { PedidoDetalheComponent } from './pedidos/detalhe/pedido-detalhe.compone
 import { FuncionariosComponent } from './funcionarios/funcionarios.component';
 
 const routes: Routes = [
-  { path: '',                    component: DashboardComponent },
-  { path: 'materiais',           component: MateriaisListComponent },
-  { path: 'materiais/novo',      component: MaterialFormComponent },
-  { path: 'materiais/:id/editar', component: MaterialFormComponent },
-  { path: 'pedidos',             component: PedidosAdminComponent },
-  { path: 'pedidos/:id',         component: PedidoDetalheComponent },
-  { path: 'funcionarios',        component: FuncionariosComponent }
+  {
+    path: '',
+    component: AdminLayoutComponent,
+    children: [
+      { path: '',                     component: DashboardComponent },
+      { path: 'materiais',            component: MateriaisListComponent },
+      { path: 'materiais/novo',       component: MaterialFormComponent },
+      { path: 'materiais/:id/editar', component: MaterialFormComponent },
+      { path: 'pedidos',              component: PedidosAdminComponent },
+      { path: 'pedidos/:id',          component: PedidoDetalheComponent },
+      { path: 'funcionarios',         component: FuncionariosComponent },
+    ]
+  }
 ];
 
 @NgModule({

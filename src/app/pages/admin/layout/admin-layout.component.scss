@@ -1,0 +1,279 @@
+@use '../../../../styles/breakpoints' as *;
+
+/* ─── Estrutura global ────────────────────────────── */
+
+:host {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-surface);
+}
+
+/* ─── Sidebar ─────────────────────────────────────── */
+
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.2s ease, transform 0.2s ease;
+  overflow: hidden;
+  z-index: 1000;
+
+  @include md {
+    width: 64px;
+
+    .sidebar-logo-text,
+    .nav-item-label {
+      display: none;
+    }
+
+    .sidebar-logo {
+      justify-content: center;
+      padding: 0 0 0 2px;
+    }
+
+    .nav-item,
+    .sidebar-logout {
+      justify-content: center;
+      padding: 14px;
+    }
+  }
+
+  @include sm {
+    width: 260px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+
+    .sidebar-logo-text,
+    .nav-item-label {
+      display: inline;
+    }
+
+    .sidebar-logo {
+      justify-content: flex-start;
+      padding: 0 20px;
+    }
+
+    .nav-item,
+    .sidebar-logout {
+      justify-content: flex-start;
+      padding: 12px 20px;
+    }
+
+    &.open {
+      transform: translateX(0);
+    }
+  }
+}
+
+.sidebar-overlay {
+  display: none;
+
+  @include sm {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+}
+
+.sidebar-logo {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+
+  i {
+    font-size: 22px;
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+}
+
+.sidebar-logo-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  white-space: nowrap;
+}
+
+/* ─── Navegação ───────────────────────────────────── */
+
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 0;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+
+  i {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+  }
+
+  &--ativo {
+    background: var(--color-accent);
+    color: white;
+    border-left-color: white;
+
+    &:hover {
+      background: var(--color-accent-light);
+    }
+  }
+}
+
+/* ─── Botão sair ──────────────────────────────────── */
+
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  margin: 8px 0 16px;
+  color: rgba(255, 255, 255, 0.6);
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  width: 100%;
+  transition: color 0.15s ease;
+
+  i {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    color: white;
+  }
+}
+
+/* ─── Área principal ──────────────────────────────── */
+
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ─── Topbar ──────────────────────────────────────── */
+
+.topbar {
+  height: 64px;
+  background: var(--color-surface-card);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+  }
+
+  @include sm {
+    display: flex;
+  }
+}
+
+.topbar-titulo {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.topbar-usuario {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-nome {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+
+  @include sm {
+    display: none;
+  }
+}
+
+.topbar-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* ─── Content area ────────────────────────────────── */
+
+.content-area {
+  flex: 1;
+  padding: 24px;
+  background: var(--color-surface);
+
+  @include sm {
+    padding: 16px;
+  }
+}
