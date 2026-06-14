@@ -1,1 +1,214 @@
-<p>funcionarios works!</p>
+<div class="funcionarios-page">
+
+  <!-- Cabeçalho -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-titulo">Funcionários</h1>
+      <p class="page-subtitulo" *ngIf="!carregando">
+        {{ funcionariosFiltrados.length }} funcionário(s) encontrado(s)
+      </p>
+    </div>
+    <p-button label="Novo Funcionário" icon="pi pi-user-plus"
+              styleClass="btn-accent" (onClick)="abrirCriacao()" />
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-bar">
+    <div class="filtro-busca">
+      <i class="pi pi-search"></i>
+      <input pInputText type="text" placeholder="Buscar por nome ou e-mail..."
+             [(ngModel)]="filtroNome" (ngModelChange)="aplicarFiltros()" />
+    </div>
+  </div>
+
+  <!-- Skeleton Desktop -->
+  <div class="table-wrapper hide-mobile" *ngIf="carregando">
+    <p-table [value]="placeholders" styleClass="p-datatable-sm p-datatable-striped">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Entrada</th>
+          <th>Status</th>
+          <th class="col-acoes">Ações</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body">
+        <tr>
+          <td><p-skeleton width="140px" /></td>
+          <td><p-skeleton width="180px" /></td>
+          <td><p-skeleton width="80px" /></td>
+          <td><p-skeleton width="60px" height="22px" /></td>
+          <td><p-skeleton width="100px" /></td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Tabela Desktop -->
+  <div class="table-wrapper hide-mobile" *ngIf="!carregando">
+    <p-table [value]="funcionariosFiltrados"
+             styleClass="p-datatable-sm p-datatable-striped"
+             [paginator]="true" [rows]="10"
+             [rowsPerPageOptions]="[10, 15, 20]"
+             [showCurrentPageReport]="true"
+             currentPageReportTemplate="{first}–{last} de {totalRecords} funcionário(s)"
+             emptyMessage="Nenhum funcionário encontrado.">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Entrada</th>
+          <th>Status</th>
+          <th class="col-acoes">Ações</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-f>
+        <tr>
+          <td class="col-nome">
+            <div class="nome-cell">
+              <span class="nome-avatar">{{ f.nome[0] }}</span>
+              {{ f.nome }}
+            </div>
+          </td>
+          <td class="col-email">{{ f.email }}</td>
+          <td class="col-data">{{ formatarData(f.criado_em) }}</td>
+          <td>
+            <p-tag [value]="f.ativo ? 'Ativo' : 'Inativo'"
+                   [severity]="f.ativo ? 'success' : 'secondary'" />
+          </td>
+          <td class="col-acoes">
+            <div class="acoes-btn-group">
+              <p-button icon="pi pi-pencil" severity="secondary" [outlined]="true" size="small"
+                        pTooltip="Editar" tooltipPosition="top"
+                        (onClick)="abrirEdicao(f)" />
+              <p-button [icon]="f.ativo ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                        [severity]="f.ativo ? 'warn' : 'success'"
+                        [outlined]="true" size="small"
+                        [pTooltip]="f.ativo ? 'Desativar' : 'Ativar'"
+                        tooltipPosition="top"
+                        (onClick)="toggleAtivo(f)" />
+              <p-button icon="pi pi-trash" severity="danger" [outlined]="true" size="small"
+                        pTooltip="Remover" tooltipPosition="top"
+                        (onClick)="confirmarRemover(f)" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Skeleton Mobile -->
+  <div class="mobile-list show-mobile" *ngIf="carregando">
+    <div class="mobile-card" *ngFor="let _ of placeholders">
+      <div class="mobile-card__header">
+        <p-skeleton width="140px" height="16px" />
+        <p-skeleton width="55px" height="22px" />
+      </div>
+      <div class="mobile-card__row">
+        <p-skeleton width="60%" height="13px" />
+      </div>
+      <div class="mobile-card__row">
+        <p-skeleton width="40%" height="13px" />
+      </div>
+      <div class="mobile-card__actions">
+        <p-skeleton width="36px" height="32px" />
+        <p-skeleton width="36px" height="32px" />
+        <p-skeleton width="36px" height="32px" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards Mobile -->
+  <div class="mobile-list show-mobile" *ngIf="!carregando">
+    <div class="empty-state" *ngIf="funcionariosFiltrados.length === 0">
+      <i class="pi pi-users empty-state__icon"></i>
+      <p>Nenhum funcionário encontrado.</p>
+    </div>
+    <div class="mobile-card" *ngFor="let f of funcionariosFiltrados">
+      <div class="mobile-card__header">
+        <div class="mobile-card__nome-wrap">
+          <span class="nome-avatar">{{ f.nome[0] }}</span>
+          <span class="mobile-card__title">{{ f.nome }}</span>
+        </div>
+        <p-tag [value]="f.ativo ? 'Ativo' : 'Inativo'"
+               [severity]="f.ativo ? 'success' : 'secondary'" />
+      </div>
+      <div class="mobile-card__row">
+        <span class="mobile-card__label">E-mail</span>
+        <span class="mobile-card__value">{{ f.email }}</span>
+      </div>
+      <div class="mobile-card__row">
+        <span class="mobile-card__label">Entrada</span>
+        <span>{{ formatarData(f.criado_em) }}</span>
+      </div>
+      <div class="mobile-card__actions">
+        <p-button icon="pi pi-pencil" severity="secondary" [outlined]="true" size="small"
+                  pTooltip="Editar" (onClick)="abrirEdicao(f)" />
+        <p-button [icon]="f.ativo ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                  [severity]="f.ativo ? 'warn' : 'success'"
+                  [outlined]="true" size="small"
+                  [pTooltip]="f.ativo ? 'Desativar' : 'Ativar'"
+                  (onClick)="toggleAtivo(f)" />
+        <p-button icon="pi pi-trash" severity="danger" [outlined]="true" size="small"
+                  pTooltip="Remover" (onClick)="confirmarRemover(f)" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Dialog Criar / Editar -->
+  <p-dialog [header]="tituloDialog"
+            [(visible)]="dialogVisivel"
+            [modal]="true" [draggable]="false"
+            [style]="{ width: '440px', maxWidth: '95vw' }"
+            (onHide)="onDialogHide()">
+    <form [formGroup]="form" class="dialog-form">
+
+      <div class="field">
+        <label class="field-label">Nome completo *</label>
+        <input pInputText formControlName="nome"
+               placeholder="Ex.: Ana Silva" class="w-full" />
+        <small class="p-error"
+               *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
+          Nome é obrigatório (mínimo 3 caracteres).
+        </small>
+      </div>
+
+      <div class="field">
+        <label class="field-label">E-mail *</label>
+        <input pInputText formControlName="email"
+               placeholder="funcionario@valeal.com" class="w-full" />
+        <small class="p-error"
+               *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+          Informe um e-mail válido.
+        </small>
+      </div>
+
+      <div class="field" *ngIf="!editando">
+        <label class="field-label">Senha *</label>
+        <input type="password" pInputText formControlName="senha"
+               placeholder="Mínimo 6 caracteres" class="w-full" />
+        <small class="p-error"
+               *ngIf="form.get('senha')?.invalid && form.get('senha')?.touched">
+          Senha é obrigatória (mínimo 6 caracteres).
+        </small>
+      </div>
+
+    </form>
+
+    <ng-template pTemplate="footer">
+      <p-button label="Cancelar" severity="secondary" [outlined]="true"
+                (onClick)="fecharDialog()" />
+      <p-button [label]="labelBotaoSalvar"
+                icon="pi pi-check"
+                styleClass="btn-accent"
+                [loading]="salvando"
+                [disabled]="form.invalid || salvando"
+                (onClick)="salvar()" />
+    </ng-template>
+  </p-dialog>
+
+  <p-confirmDialog />
+  <p-toast />
+
+</div>

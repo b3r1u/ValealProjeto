@@ -1,9 +1,12 @@
 import { Usuario, SessaoChat } from '../../app/models/usuario.model';
 
 export const USUARIOS_MOCK: Usuario[] = [
-  { id: 1, nome: 'João Cliente',   email: 'cliente@teste.com',    perfil: 'cliente',     ativo: true, criado_em: new Date('2024-01-01') },
-  { id: 2, nome: 'Maria Designer', email: 'funcionario@teste.com', perfil: 'funcionario', ativo: true, criado_em: new Date('2024-01-01') },
-  { id: 3, nome: 'Carlos Admin',   email: 'admin@teste.com',       perfil: 'admin',       ativo: true, criado_em: new Date('2024-01-01') },
+  { id: 1, nome: 'João Cliente',      email: 'cliente@teste.com',      perfil: 'cliente',     ativo: true,  criado_em: new Date('2024-01-01') },
+  { id: 2, nome: 'Maria Designer',    email: 'maria@valeal.com',        perfil: 'funcionario', ativo: true,  criado_em: new Date('2024-01-10') },
+  { id: 3, nome: 'Carlos Admin',      email: 'admin@valeal.com',        perfil: 'admin',       ativo: true,  criado_em: new Date('2024-01-01') },
+  { id: 4, nome: 'Lucas Artes',       email: 'lucas@valeal.com',        perfil: 'funcionario', ativo: true,  criado_em: new Date('2024-02-05') },
+  { id: 5, nome: 'Fernanda Criativa', email: 'fernanda@valeal.com',     perfil: 'funcionario', ativo: true,  criado_em: new Date('2024-02-18') },
+  { id: 6, nome: 'Rafael Gráfico',    email: 'rafael@valeal.com',       perfil: 'funcionario', ativo: false, criado_em: new Date('2024-03-01') },
 ];
 
 export const SESSOES_CHAT_MOCK: SessaoChat[] = [
